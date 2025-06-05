@@ -19,7 +19,9 @@
           <div class="flex flex-col">
             <label for="">Converter de</label>
             <div class="border flex">
-              <input type="text" id="from" class="focus:outline-none" />
+              <div id="from-div" class="cursor-pointer">
+                <input type="text" id="from" class="focus:outline-none pointer-events-none" />
+              </div>
               <div class="border-l px-1">
                 <select id="select-from" class="focus:outline-none">
                 </select>
@@ -32,7 +34,9 @@
           <div class="flex flex-col">
             <label for="">Para</label>
             <div class="border flex">
-              <input type="text" id="for" class="focus:outline-none" />
+              <div id="to-div" class="cursor-pointer">
+                <input type="text" id="to" class="focus:outline-none pointer-events-none" disabled/>
+              </div>
               <div class="border-l px-1">
                 <select id="select-to" class="focus:outline-none">
                 </select>
