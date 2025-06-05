@@ -15,25 +15,28 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
   .then((response) => response.json())
   .then((data) => {
     const conversionRates = data.conversion_rates; // objeto
+    const taxas = Object.values(conversionRates); // array
+    const moedas = Object.keys(conversionRates); // array
 
-    Object.entries(conversionRates).forEach(([moeda, taxa]) => {
-      // transforma em array
-      const option = document.createElement("option"); // cria options no select de moedas
-      option.value = moeda;
-      option.textContent = moeda;
-      selectFromEl.appendChild(option);
-    });
+    function setOptions(selectEl) {
+      moedas.forEach((moeda) => {
+        const option = document.createElement("option"); // cria options no select de moedas
+        option.value = moeda;
+        option.textContent = moeda;
+        selectEl.appendChild(option);
+      });
+    }
 
-    Object.entries(conversionRates).forEach(([moeda, taxa]) => {
-      const option = document.createElement("option"); // cria options no select de moedas
-      option.value = moeda;
-      option.textContent = moeda;
-      selectToEl.appendChild(option);
-    });
+    setOptions(selectFromEl);
+    setOptions(selectToEl);
 
-    const optionFromElement = document.querySelector("#select-from option[value='USD']"); // seleciona USD como padrão do select-from
+    const optionFromElement = document.querySelector(
+      "#select-from option[value='USD']"
+    ); // seleciona USD como padrão do select-from
     optionFromElement.setAttribute("selected", "selected");
-    const optionToElement = document.querySelector("#select-to option[value='BRL']"); // seleciona BRL como padrão do select-to
+    const optionToElement = document.querySelector(
+      "#select-to option[value='BRL']"
+    ); // seleciona BRL como padrão do select-to
     optionToElement.setAttribute("selected", "selected");
   })
   .catch((error) => {
@@ -52,13 +55,17 @@ function activateInput(input1, input2) {
   input2.disabled = true;
 }
 
-inputToDiv.addEventListener("click", () => activateInput(inputToEl, inputFromEl));
-inputFromDiv.addEventListener("click", () => activateInput(inputFromEl, inputToEl));
+inputToDiv.addEventListener("click", () =>
+  activateInput(inputToEl, inputFromEl)
+);
+inputFromDiv.addEventListener("click", () =>
+  activateInput(inputFromEl, inputToEl)
+);
 
-inputFromEl.addEventListener("input", function() {
+inputFromEl.addEventListener("input", function () {
   inputToEl.value = this.value;
 });
 
-inputToEl.addEventListener("input", function() {
+inputToEl.addEventListener("input", function () {
   inputFromEl.value = this.value;
 });
