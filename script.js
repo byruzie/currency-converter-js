@@ -11,6 +11,12 @@ $(document).ready(function () {
 const selectFromEl = document.getElementById("select-from");
 const selectToEl = document.getElementById("select-to");
 
+// verificar qual option ta selecionada e a partir dessa option falar a taxa
+function getSelected(selectEl) {
+  const selected = selectEl.value;
+  console.log(selected);
+}
+
 fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
   .then((response) => response.json())
   .then((data) => {
@@ -18,9 +24,10 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
     const taxas = Object.values(conversionRates); // array
     const moedas = Object.keys(conversionRates); // array
 
+    // cria options no select de moedas
     function setOptions(selectEl) {
       moedas.forEach((moeda) => {
-        const option = document.createElement("option"); // cria options no select de moedas
+        const option = document.createElement("option");
         option.value = moeda;
         option.textContent = moeda;
         selectEl.appendChild(option);
@@ -30,18 +37,50 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
     setOptions(selectFromEl);
     setOptions(selectToEl);
 
+    // seleciona USD como padrão do select-from
     const optionFromElement = document.querySelector(
       "#select-from option[value='USD']"
-    ); // seleciona USD como padrão do select-from
+    );
     optionFromElement.setAttribute("selected", "selected");
+    // seleciona BRL como padrão do select-to
     const optionToElement = document.querySelector(
       "#select-to option[value='BRL']"
-    ); // seleciona BRL como padrão do select-to
+    );
     optionToElement.setAttribute("selected", "selected");
+
+    // converte valor do input de from para to
+    inputFromEl.addEventListener("input", function () {
+      const valor = parseFloat(this.value.replace(".", "").replace(",", "."));
+      const taxaDe = conversionRates[selectFromEl.value];
+      const taxaPara = conversionRates[selectToEl.value];
+      const convertido = (valor / taxaDe) * taxaPara;
+      if (isNaN(valor)) {
+        inputToEl.value = "";
+        return;
+      }
+      inputToEl.value = convertido.toFixed(2).replace(".", ",");
+    });
+
+    // converte valor do input de to para from
+    inputToEl.addEventListener("input", function () {
+      const valor = parseFloat(this.value.replace(".", "").replace(",", "."));
+      const taxaDe = conversionRates[selectFromEl.value];
+      const taxaPara = conversionRates[selectToEl.value];
+      const convertido = (valor / taxaPara) * taxaDe;
+      if (isNaN(valor)) {
+        inputFromEl.value = "";
+        return;
+      }
+      inputFromEl.value = convertido.toFixed(2).replace(".", ",");
+    });
   })
   .catch((error) => {
     console.error("Erro ao obter dados:", error);
   });
+
+// selects onChange
+selectFromEl.addEventListener("change", () => getSelected(selectFromEl));
+selectToEl.addEventListener("change", () => getSelected(selectToEl));
 
 // input from e to
 const inputFromEl = document.getElementById("from");
@@ -61,11 +100,3 @@ inputToDiv.addEventListener("click", () =>
 inputFromDiv.addEventListener("click", () =>
   activateInput(inputFromEl, inputToEl)
 );
-
-inputFromEl.addEventListener("input", function () {
-  inputToEl.value = this.value;
-});
-
-inputToEl.addEventListener("input", function () {
-  inputFromEl.value = this.value;
-});
