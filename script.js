@@ -11,12 +11,6 @@ $(document).ready(function () {
 const selectFromEl = document.getElementById("select-from");
 const selectToEl = document.getElementById("select-to");
 
-// verificar qual option ta selecionada e a partir dessa option falar a taxa
-function getSelected(selectEl) {
-  const selected = selectEl.value;
-  console.log(selected);
-}
-
 fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
   .then((response) => response.json())
   .then((data) => {
@@ -38,15 +32,27 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
     setOptions(selectToEl);
 
     // seleciona USD como padrão do select-from
-    const optionFromElement = document.querySelector(
-      "#select-from option[value='USD']"
-    );
-    optionFromElement.setAttribute("selected", "selected");
+    document.querySelector("#select-from").value = "USD";
     // seleciona BRL como padrão do select-to
-    const optionToElement = document.querySelector(
-      "#select-to option[value='BRL']"
-    );
-    optionToElement.setAttribute("selected", "selected");
+    document.querySelector("#select-to").value = "BRL";
+
+    // inverter as moedas
+    const iconAlt = document.getElementById("alt");
+    iconAlt.addEventListener("click", () => {
+      // inverte as moedas
+      const optionFromValue = document.querySelector("#select-from").value;
+      const optionToValue = document.querySelector("#select-to").value;
+      document.querySelector("#select-from").value = `${optionToValue}`;
+      document.querySelector("#select-to").value = `${optionFromValue}`;
+
+      // se tiver valor, inverte o valor
+      if (inputFromEl.value) {
+        const valueFrom = inputFromEl.value
+        const valueTo = inputToEl.value;
+        inputFromEl.value = valueTo;
+        inputToEl.value = valueFrom;
+      }
+    });
 
     // converte valor do input de from para to
     inputFromEl.addEventListener("input", function () {
