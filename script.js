@@ -76,17 +76,21 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
 
     // converte valor do input de from para to
     inputFromEl.addEventListener("input", () => converter());
-
     // converte valor do input de to para from
     inputToEl.addEventListener("input", () => converter());
+
+    // converte ao trocar moeda selecionada
+    selectFromEl.addEventListener("change", () => {
+      converter();
+    })
+
+    selectToEl.addEventListener("change", () => {
+      converter();
+    })
   })
   .catch((error) => {
     console.error("Erro ao obter dados:", error);
   });
-
-// selects onChange
-selectFromEl.addEventListener("change", () => getSelected(selectFromEl));
-selectToEl.addEventListener("change", () => getSelected(selectToEl));
 
 // input from e to
 const inputFromEl = document.getElementById("from");
