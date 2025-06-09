@@ -47,38 +47,38 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
 
       // se tiver valor, inverte o valor
       if (inputFromEl.value) {
-        const valueFrom = inputFromEl.value
+        const valueFrom = inputFromEl.value;
         const valueTo = inputToEl.value;
         inputFromEl.value = valueTo;
         inputToEl.value = valueFrom;
       }
     });
 
-    // converte valor do input de from para to
-    inputFromEl.addEventListener("input", function () {
-      const valor = parseFloat(this.value.replace(".", "").replace(",", "."));
+    // função de conversão
+    function converter() {
+      const valorFrom = parseFloat(
+        inputFromEl.value.replace(".", "").replace(",", ".")
+      );
+      const valorTo = parseFloat(
+        inputToEl.value.replace(".", "").replace(",", ".")
+      );
       const taxaDe = conversionRates[selectFromEl.value];
       const taxaPara = conversionRates[selectToEl.value];
-      const convertido = (valor / taxaDe) * taxaPara;
-      if (isNaN(valor)) {
-        inputToEl.value = "";
-        return;
+
+      if (!inputFromEl.disabled && !isNaN(valorFrom)) {
+        const convertido = (valorFrom / taxaDe) * taxaPara;
+        inputToEl.value = convertido.toFixed(2).replace(".", ",");
+      } else if (!inputToEl.disabled && !isNaN(valorTo)) {
+        const convertido = (valorTo / taxaPara) * taxaDe;
+        inputFromEl.value = convertido.toFixed(2).replace(".", ",");
       }
-      inputToEl.value = convertido.toFixed(2).replace(".", ",");
-    });
+    }
+
+    // converte valor do input de from para to
+    inputFromEl.addEventListener("input", () => converter());
 
     // converte valor do input de to para from
-    inputToEl.addEventListener("input", function () {
-      const valor = parseFloat(this.value.replace(".", "").replace(",", "."));
-      const taxaDe = conversionRates[selectFromEl.value];
-      const taxaPara = conversionRates[selectToEl.value];
-      const convertido = (valor / taxaPara) * taxaDe;
-      if (isNaN(valor)) {
-        inputFromEl.value = "";
-        return;
-      }
-      inputFromEl.value = convertido.toFixed(2).replace(".", ",");
-    });
+    inputToEl.addEventListener("input", () => converter());
   })
   .catch((error) => {
     console.error("Erro ao obter dados:", error);
