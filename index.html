@@ -11,38 +11,80 @@
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div class="w-full h-screen flex justify-center items-center bg-stone-200">
-      <div class="border p-6 bg-stone-50">
-        <div class="flex items-center gap-4">
-          <div class="flex flex-col">
-            <label for="">Converter de</label>
-            <div class="border flex">
-              <div id="from-div" class="cursor-pointer">
-                <input type="text" id="from" class="focus:outline-none pointer-events-none" />
-              </div>
-              <div class="border-l px-1">
-                <select id="select-from" class="focus:outline-none">
-                </select>
-              </div>
+    <div class="w-full h-screen flex justify-center items-center bg-stone-300">
+      <div
+        class="flex flex-col justify-between p-6 bg-stone-50 rounded-lg shadow-sm w-[400px] h-[300px]"
+      >
+        <div class="flex flex-col gap-1">
+          <div class="flex gap-2">
+            <span class="material-symbols-outlined"> currency_exchange </span>
+          <h1 class="font-medium">Currency Converter</h1>
+          </div>
+          <div>
+            <p class="text-sm text-stone-500">Easily convert between global currencies in real time.</p>
+          </div>
+        </div>
+        <div
+          class="flex flex-col items-center border border-stone-300 rounded-lg"
+        >
+          <div class="border-b border-stone-300 w-full flex items-center">
+            <div class="w-full py-[2px] h-full">
+              <select
+                id="select-from"
+                class="focus:outline-none cursor-pointer text-sm font-medium pl-2 w-full"
+              ></select>
+            </div>
+            <div
+              class="flex justify-end w-full border-l border-stone-300 py-[2px] h-full"
+            >
+              <select
+                id="select-to"
+                class="focus:outline-none cursor-pointer text-sm font-medium pl-2 w-full"
+              ></select>
             </div>
           </div>
-          <div class="cursor-pointer">
-            <span id="alt" class="material-symbols-outlined">sync_alt</span>
-          </div>
-          <div class="flex flex-col">
-            <label for="">Para</label>
-            <div class="border flex">
-              <div id="to-div" class="cursor-pointer">
-                <input type="text" id="to" class="focus:outline-none pointer-events-none" disabled/>
-              </div>
-              <div class="border-l px-1">
-                <select id="select-to" class="focus:outline-none">
-                </select>
-              </div>
+          <div class="flex relative">
+            <div id="from-div" class="cursor-pointer w-full">
+              <input
+                type="text"
+                id="from"
+                class="focus:outline-none pointer-events-none w-full p-4"
+              />
+            </div>
+            <div
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-stone-50 rounded-full flex"
+            >
+              <span id="alt" class="material-symbols-outlined">sync_alt</span>
+            </div>
+            <div
+              id="to-div"
+              class="cursor-pointer w-full border-l border-stone-300"
+            >
+              <input
+                type="text"
+                id="to"
+                class="focus:outline-none pointer-events-none w-full p-4"
+                disabled
+              />
             </div>
           </div>
+
+          <div
+            class="bg-stone-100 w-full flex justify-center gap-1 p-1 border-t border-stone-300"
+          >
+            <h1 class="text-sm font-medium text-stone-500">1 USD =</h1>
+            <h1 class="text-sm font-medium">5,56 BRL</h1>
+          </div>
+        </div>
+        <div class="flex justify-end items-center gap-2 w-full">
+          <h1 class="text-sm font-medium">Exchange Rates</h1>
+          <button class="bg-stone-900 text-stone-50 rounded-lg p-[2px] flex justify-center cursor-pointer">
+            <span class="material-symbols-outlined"> arrow_forward </span>
+          </button>
+          
         </div>
       </div>
     </div>
