@@ -14,7 +14,7 @@ Este é um **Conversor de Moedas** feito com **JavaScript + Tailwind CSS**, com 
 ## 🚀 Deploy
 
 Acesse o projeto online:  
-👉 [https://byruzie.github.io/currency-converter.js/](https://byruzie.github.io/kanban/)
+👉 [https://byruzie.github.io/currency-converter.js/](https://byruzie.github.io/currency-converter-js/)
 
 ---
 
