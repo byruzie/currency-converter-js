@@ -7,23 +7,61 @@ $(document).ready(function () {
   $("#to").mask("000.000,00", { reverse: true });
 });
 
-// FLAG DE TESTE
-const MODO_TESTE = true;
-
-// MOCK DE DADOS
-const mockData = {
-  conversion_rates: {
-    USD: 1,
-    BRL: 5.25,
-    EUR: 0.93,
-    JPY: 156.78
-  }
-};
-
+// elementos
 const selectFromEl = document.getElementById("select-from");
 const selectToEl = document.getElementById("select-to");
+const inputFromEl = document.getElementById("from");
+const inputToEl = document.getElementById("to");
+const inputFromDiv = document.getElementById("from-div");
+const inputToDiv = document.getElementById("to-div");
 
-function iniciateConverter(data) {
+// armazena os dados da api
+const STORAGE_KEY = "exchangeRatesCache";
+
+// verifica se uma data é a data de hoje
+function isToday(dateStr) {
+  const savedDate = new Date(dateStr);
+  const today = new Date();
+  return (
+    savedDate.getDate() === today.getDate() &&
+    savedDate.getMonth() === today.getMonth() &&
+    savedDate.getFullYear() === today.getFullYear()
+  );
+}
+
+// obtém os dados da api
+function fetchRates() {
+  const cacheStr = localStorage.getItem(STORAGE_KEY);
+
+  // verifica se o cache já existe
+  if (cacheStr) { 
+    const cache = JSON.parse(cacheStr);
+    if (isToday(cache.date)) {
+      console.log("Usando dados do cache localStorage");
+      return Promise.resolve(cache.data);
+    }
+  }
+
+  return fetch(
+    "https://v6.exchangerate-api.com/v6/7a50fe30ea409715c7ce4e90/latest/USD"
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.result === "success") {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            date: new Date().toISOString(),
+            data,
+          })
+        );
+      }
+      return data;
+    });
+}
+
+// inicializa o app com os dados da api
+function initApp(data) {
   const conversionRates = data.conversion_rates; // objeto
   const moedas = Object.keys(conversionRates); // array
 
@@ -44,7 +82,7 @@ function iniciateConverter(data) {
   // seleciona BRL como padrão do select-to
   document.querySelector("#select-to").value = "BRL";
 
-// inverter as moedas
+  // inverter as moedas
   const iconAlt = document.getElementById("alt");
   iconAlt.addEventListener("click", () => {
     // inverte as moedas
@@ -104,7 +142,9 @@ function iniciateConverter(data) {
     const h1To = document.getElementById("h1-to");
     const taxaPara = conversionRates[selectToEl.value];
     const convertido = 1 * taxaPara;
-    h1To.textContent = `${convertido.toFixed(2).replace(".", ",")} ${selectToEl.value} `;
+    h1To.textContent = `${convertido.toFixed(2).replace(".", ",")} ${
+      selectToEl.value
+    } `;
   }
 
   unitValue();
@@ -117,41 +157,37 @@ function iniciateConverter(data) {
   // converte ao trocar moeda selecionada
   selectFromEl.addEventListener("change", () => {
     converter();
-    unitValue()
+    unitValue();
   });
 
   selectToEl.addEventListener("change", () => {
     converter();
+    unitValue();
   });
+
+  function activateInput(input1, input2) {
+    input1.disabled = false;
+    input1.focus();
+    input2.disabled = true;
+  }
+
+  inputToDiv.addEventListener("click", () =>
+    activateInput(inputToEl, inputFromEl)
+  );
+  inputFromDiv.addEventListener("click", () =>
+    activateInput(inputFromEl, inputToEl)
+  );
 }
 
-// api com taxas de câmbio
-if(MODO_TESTE) {
-  iniciateConverter(mockData);
-} else {
-  fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
-  .then((response) => response.json())
-  .then((data) => iniciateConverter(data))
+//  chama a função que pega os dados para depois chamar a função que inicia o app
+fetchRates()
+  .then((data) => {
+    if (!data || !data.conversion_rates) {
+      console.error("Resposta inválida da API ou do cache:", data);
+      return;
+    }
+    initApp(data);
+  })
   .catch((error) => {
     console.error("Erro ao obter dados:", error);
   });
-}
-
-// input from e to
-const inputFromEl = document.getElementById("from");
-const inputToEl = document.getElementById("to");
-const inputFromDiv = document.getElementById("from-div");
-const inputToDiv = document.getElementById("to-div");
-
-function activateInput(input1, input2) {
-  input1.disabled = false;
-  input1.focus();
-  input2.disabled = true;
-}
-
-inputToDiv.addEventListener("click", () =>
-  activateInput(inputToEl, inputFromEl)
-);
-inputFromDiv.addEventListener("click", () =>
-  activateInput(inputFromEl, inputToEl)
-);
