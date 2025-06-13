@@ -27,7 +27,6 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
         selectEl.appendChild(option);
       });
     }
-
     setOptions(selectFromEl);
     setOptions(selectToEl);
 
@@ -65,14 +64,41 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
       const taxaDe = conversionRates[selectFromEl.value];
       const taxaPara = conversionRates[selectToEl.value];
 
-      if (!inputFromEl.disabled && !isNaN(valorFrom)) {
+      if (!inputFromEl.disabled) {
+        if (isNaN(valorFrom)) {
+          inputToEl.value = "";
+          return;
+        }
         const convertido = (valorFrom / taxaDe) * taxaPara;
         inputToEl.value = convertido.toFixed(2).replace(".", ",");
-      } else if (!inputToEl.disabled && !isNaN(valorTo)) {
+      } else if (!inputToEl.disabled) {
+        if (isNaN(valorTo)) {
+          inputFromEl.value = "";
+          return;
+        }
         const convertido = (valorTo / taxaPara) * taxaDe;
         inputFromEl.value = convertido.toFixed(2).replace(".", ",");
       }
     }
+
+    // define 1 como valor padrão
+    (function defaultValue() {
+      inputFromEl.value = "1,00";
+      converter();
+    })();
+
+    // caixa de exemplo por unidade
+    function unitValue() {
+      const h1From = document.getElementById("h1-from");
+      h1From.textContent = `1 ${selectFromEl.value} =`;
+
+      const h1To = document.getElementById("h1-to");
+      const taxaPara = conversionRates[selectToEl.value];
+      const convertido = 1 * taxaPara;
+      h1To.textContent = `${convertido.toFixed(2).replace(".", ",")} ${selectToEl.value} `;
+    }
+
+    unitValue();
 
     // converte valor do input de from para to
     inputFromEl.addEventListener("input", () => converter());
@@ -82,11 +108,12 @@ fetch("https://v6.exchangerate-api.com/v6/6971c71c0b89341728d6c0f5/latest/USD")
     // converte ao trocar moeda selecionada
     selectFromEl.addEventListener("change", () => {
       converter();
-    })
+      unitValue()
+    });
 
     selectToEl.addEventListener("change", () => {
       converter();
-    })
+    });
   })
   .catch((error) => {
     console.error("Erro ao obter dados:", error);

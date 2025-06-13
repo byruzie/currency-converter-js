@@ -66,7 +66,7 @@
               <input
                 type="text"
                 id="to"
-                class="focus:outline-none pointer-events-none w-full p-4"
+                class="focus:outline-none pointer-events-none w-full p-4 text-right"
                 disabled
               />
             </div>
@@ -75,12 +75,12 @@
           <div
             class="bg-stone-100 w-full flex justify-center gap-1 p-1 border-t border-stone-300"
           >
-            <h1 class="text-sm font-medium text-stone-500">1 USD =</h1>
-            <h1 class="text-sm font-medium">5,56 BRL</h1>
+            <h1 id="h1-from" class="text-sm font-medium text-stone-500"></h1>
+            <h1 id="h1-to" class="text-sm font-medium">5,56 BRL</h1>
           </div>
         </div>
         <div class="flex justify-end items-center gap-2 w-full">
-          <h1 class="text-sm font-medium">Exchange Rates</h1>
+          <h1 class="text-sm font-medium cursor-pointer">Exchange Rates</h1>
           <button class="bg-stone-900 text-stone-50 rounded-lg p-[2px] flex justify-center cursor-pointer">
             <span class="material-symbols-outlined"> arrow_forward </span>
           </button>
